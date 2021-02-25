@@ -1,31 +1,10 @@
-import sqlite3
+from modules.sqlitemanager import SqliteManager
+from modules.barcodemanager import BarcodeManager
 
-def convertSqlite(tableName):
-    conn = sqlite3.connect('main.sqlite')
-    c = conn.cursor()
-    
-    RowsArray=[]
 
-    RowsDescription=[]
-    
-    execution=c.execute("SELECT * FROM "+tableName+";")
-
-    for row in execution.description:
-        RowsDescription.append(row[0])
-
-    for row in execution.fetchall():
-        rowDict={}
-        RowsArrayIndex=0
-        for name in RowsDescription:
-            rowDict[RowsDescription[RowsArrayIndex]] = row[RowsArrayIndex]
-            RowsArrayIndex=RowsArrayIndex+1
-        RowsArray.append(rowDict)
-    conn.close()
-    return RowsArray
-
-racks=convertSqlite('racks')
-users=convertSqlite('users')
-active=convertSqlite('active')
-
-input = input("Enter the number you would like to use: ")
+racks=SqliteManager.convertSqlite('racks')
+users=SqliteManager.convertSqlite('users')
+active=SqliteManager.convertSqlite('active')
+image = BarcodeManager.camera()
+print(BarcodeManager.decode(image))
 
