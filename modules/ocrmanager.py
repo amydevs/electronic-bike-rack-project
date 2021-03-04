@@ -1,15 +1,14 @@
-from pyzbar import pyzbar
+import pytesseract
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
 # from skimage import io
 
-class BarcodeManager:
-    def __init__(initthing):
+class OcrManager:
+    def __init__(self, initthing):
         self.initthing=initthing
 
-    def camera():
+    def camera(self):
         cam = cv2.VideoCapture(0)
         cv2.namedWindow("Test")
         img_counter = 0
@@ -20,13 +19,8 @@ class BarcodeManager:
             if not ret:
                 print("failed to grab frame")
                 break
-            frame = BarcodeManager.processImage(frame)
+            frame = self.processImage(frame)
             cv2.imshow("Test", frame)
-
-            returnmessage = BarcodeManager.decode(frame)
-            if (len(returnmessage)>0) :
-                img_counter += 1
-                
 
             k = cv2.waitKey(1)
             if k%256 == 27:
@@ -39,30 +33,30 @@ class BarcodeManager:
                 # img_name = "opencv_frame_{}.png".format(img_counter)
                 # cv2.imwrite(img_name, frame)
                 # print("{} written!".format(img_name))
+                returnmessage = self.decode(frame).split('\n')
                 img_counter += 1
-                returnmessage='none'
         cam.release()
         cv2.destroyAllWindows()
         return returnmessage
-    def processImage(image):
+    def processImage(self, image):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # image = cv2.adaptiveThreshold(image,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
-        image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (1, 21)))
+        # image = cv2.morphologyEx(image, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (1, 21)))
         
-        # Stats
-        dens = np.sum(image, axis=0)
-        mean = np.mean(dens)
+        # # Stats
+        # dens = np.sum(image, axis=0)
+        # mean = np.mean(dens)
 
-        #Threshold
-        thresh = image.copy()
-        for idx, val in enumerate(dens):
-            if val< 10800:
-                thresh[:,idx] = 0
+        # #Threshold
+        # thresh = image.copy()
+        # for idx, val in enumerate(dens):
+        #     if val< 10800:
+        #         thresh[:,idx] = 0
 
-        (_, image) = cv2.threshold(thresh, 128, 255, cv2.THRESH_BINARY)
+        # (_, image) = cv2.threshold(image, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
         return image 
-    def decode(image):
+    def decode(self, image):
     # decodes all barcodes from an image
 
         # image = cv2.cvtColor(imgimport, cv2.COLOR_RGB2GRAY)
@@ -80,8 +74,8 @@ class BarcodeManager:
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         
-
-        decoded_objects = pyzbar.decode(image)
+        custom_config = r'--oem 3 --psm 6 outputbase digits'
+        decoded_objects = pytesseract.image_to_string(image, config=custom_config)
         # for obj in decoded_objects:
         #     # draw the barcode
         #     print("detected barcode:", obj)
@@ -91,14 +85,3 @@ class BarcodeManager:
         #     print("Data:", obj.data)
         #     print()
         return decoded_objects
-
-    def draw_barcode(decoded, image):
-        # n_points = len(decoded.polygon)
-        # for i in range(n_points):
-        #     image = cv2.line(image, decoded.polygon[i], decoded.polygon[(i+1) % n_points], color=(0, 255, 0), thickness=5)
-        # uncomment above and comment below if you want to draw a polygon and not a rectangle
-        image = cv2.rectangle(image, (decoded.rect.left, decoded.rect.top), 
-            (decoded.rect.left + decoded.rect.width, decoded.rect.top + decoded.rect.height),
-            color=(0, 255, 0),
-            thickness=5)
-        return image

@@ -1,2 +1,4 @@
 opencv-python==4.5.1.48
 pyzbar==0.1.8
+numpy
+pytesseract
