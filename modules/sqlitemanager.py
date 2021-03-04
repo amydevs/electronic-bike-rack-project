@@ -31,42 +31,41 @@ class SqliteManager:
         users=self.convertSqlite('users')
 
         accountObject = None
+        returnID = None
         for x in users:
-            print(int(x['cardNo']), int(accountString))
             if (int(x['cardNo']) == int(accountString)):
                 accountObject = x
 
         if(accountObject):
-            self.incrementUsers(accountObject)
+            returnID = self.incrementUsers(accountString)
         else:
-            self.createUsersRow(accountString)
+            returnID = self.createUsersRow(accountString)
 
         # accountMatch = [x for x in users if int(x['cardNo']) == int(accountString)]
         # print(accountMatch)
-        return 
+        return returnID
 
     def createUsersRow(self, accountString):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
 
         c.execute(f'INSERT INTO users (cardNo , uses) VALUES({accountString}, 1);')
+        execution = c.execute(f'SELECT id FROM users WHERE cardNo = {accountString};').fetchone()
         conn.commit()
         conn.close()
+        return execution[0]
 
-    def incrementUsers(self, user):
+
+    def incrementUsers(self, cardNo):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
+        execution = c.execute(f'SELECT * FROM users WHERE cardNo = {cardNo};').fetchall()[0]
+        uses = int(execution[2])+1
 
-
-
-        uses = int(user['uses']) + 1
-        cardNo = user['cardNo']
-        usesthing = c.execute(f'SELECT * FROM users WHERE cardNo = {cardNo};').fetchall()[0]
-        
         c.execute(f'UPDATE users SET uses = {str(uses)} WHERE cardNo = {cardNo};')
         conn.commit()
         conn.close()
-        return
+        return execution[0]
     # Rack Stuff
     def toggleRack(self, rackId):
         conn = sqlite3.connect('main.sqlite')
@@ -78,11 +77,18 @@ class SqliteManager:
         if (int(rack[1]) != 1):
             locked = "0"
 
-        c.execute(f'UPDATE users SET locked = {locked} WHERE id = {rackId};')
+        c.execute(f'UPDATE racks SET locked = {locked} WHERE id = {rackId};')
         conn.commit()
         
         conn.close()
         return returnmessage
     
+    # Active Stuff
+    def createActiveRow(self, userID, rackID):
+        conn = sqlite3.connect('main.sqlite')
+        c = conn.cursor()
 
+        c.execute(f'INSERT INTO active (userID , rackID) VALUES({userID}, {rackID});')
+        conn.commit()
+        conn.close()
 

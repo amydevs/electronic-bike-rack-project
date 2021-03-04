@@ -3,10 +3,15 @@ from modules.barcodemanager import BarcodeManager
 from modules.ocrmanager import OcrManager
 import numpy as np
 
-SqliteManager().cardNoProcess('9012391')
+cardNo = 213321
+userID = SqliteManager().cardNoProcess(cardNo)
 
-input = input('Enter your desired rack number: ')
-print (SqliteManager().toggleRack(input))
+rackId = input('Enter your desired rack number: ')
+print (SqliteManager().toggleRack(rackId))
+
+SqliteManager().createActiveRow(userID, rackId)
+
+
 
 
 # def run():
