@@ -67,16 +67,24 @@ class SqliteManager:
         conn.close()
         return execution[0]
     # Rack Stuff
+    def getRack(self, rackId):
+        conn = sqlite3.connect('main.sqlite')
+        c = conn.cursor()
+
+        returnObject = c.execute(f'SELECT * FROM racks WHERE id = {rackId};').fetchall()[0]
+        conn.close()
+        return returnObject
     def toggleRack(self, rackId):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
 
         rack = c.execute(f'SELECT * FROM racks WHERE id = {rackId};').fetchall()[0]
         returnmessage = rack[0]
-        locked = "1"
-        if (int(rack[1]) != 1):
+        locked = ""
+        if (int(rack[1]) == 1):
             locked = "0"
-
+        elif (int(rack[1]) == 0):
+            locked = "1"
         c.execute(f'UPDATE racks SET locked = {locked} WHERE id = {rackId};')
         conn.commit()
         
@@ -91,4 +99,20 @@ class SqliteManager:
         c.execute(f'INSERT INTO active (userID , rackID) VALUES({userID}, {rackID});')
         conn.commit()
         conn.close()
+    def findActiveRow(self, userID):
+        conn = sqlite3.connect('main.sqlite')
+        c = conn.cursor()
+
+        returnObject = c.execute(f'SELECT * FROM active WHERE userID = {userID};').fetchall()
+        conn.commit()
+        conn.close()
+        return returnObject
+    def deleteActiveRow(self, userID):
+        conn = sqlite3.connect('main.sqlite')
+        c = conn.cursor()
+
+        returnObject = c.execute(f'DELETE FROM active WHERE userID = {userID};').fetchall()
+        conn.commit()
+        conn.close()
+        return returnObject
 
