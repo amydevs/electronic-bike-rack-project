@@ -96,7 +96,6 @@ class SqliteManager:
         c = conn.cursor()
         racks = c.execute(f'SELECT * FROM racks;').fetchall()
         conn.close()
-        print(racks)
         table = texttable.Texttable()
         table.add_row(["Rack Number", "Locked"]) 
         for rack in racks:
@@ -114,8 +113,6 @@ class SqliteManager:
     def findActiveRow(self, userID):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
-
-        print(f'SELECT * FROM active WHERE userID = {userID};')
 
         returnObject = c.execute(f'SELECT * FROM active WHERE userID = {userID};').fetchall()
         conn.commit()

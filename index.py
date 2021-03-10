@@ -42,7 +42,7 @@ while (True):
                 rackIsntUnique = False
 
 
-        print (SqliteManager().toggleRack(rackId))
+        SqliteManager().toggleRack(rackId)
 
         SqliteManager().createActiveRow(userID, rackId)
     os.system('clear')
