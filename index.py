@@ -1,11 +1,11 @@
 from modules.sqlitemanager import SqliteManager
 from modules.barcodemanager import BarcodeManager
 from modules.ocrmanager import OcrManager
-import numpy as np
 import os
 
 while (True):
     os.system('clear')
+    print(SqliteManager().rackTable())
     def run():
         correctNumber = False
         while (not correctNumber):

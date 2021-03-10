@@ -3,3 +3,4 @@ opencv-python==4.5.1.48
 Pillow==8.1.2
 pytesseract==0.3.7
 pyzbar==0.1.8
+texttable==1.6.3

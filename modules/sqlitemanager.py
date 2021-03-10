@@ -1,4 +1,5 @@
 import sqlite3
+import texttable
 
 class SqliteManager:
     def __init__(self):
@@ -90,13 +91,18 @@ class SqliteManager:
         
         conn.close()
         return returnmessage
-    def openRacksChart(self):
+    def rackTable(self):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
-
-        returnObject = c.execute(f'SELECT * FROM racks WHERE id = {rackId};').fetchall()[0]
+        racks = c.execute(f'SELECT * FROM racks;').fetchall()
         conn.close()
-        return returnObject
+        print(racks)
+        table = texttable.Texttable()
+        table.add_row(["Rack Number", "Locked"]) 
+        for rack in racks:
+            table.add_row([rack[0], rack[1]])
+        return table.draw()
+        
     # Active Stuff
     def createActiveRow(self, userID, rackID):
         conn = sqlite3.connect('main.sqlite')
