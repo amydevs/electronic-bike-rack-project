@@ -1,0 +1,4 @@
+source venv/bin/activate
+str="$*"
+pip $str
+pip freeze > requirements.txt 
