@@ -5,12 +5,11 @@ import numpy as np
 # from skimage import io
 
 class OcrManager:
-    def __init__(self, initthing):
-        self.initthing=initthing
 
     def camera(self):
         cam = cv2.VideoCapture(0)
-        cv2.namedWindow("Test")
+        cv2.namedWindow("Test", cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty("Test",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
         img_counter = 0
         img = ""
         returnmessage = ""

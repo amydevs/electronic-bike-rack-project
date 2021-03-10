@@ -90,7 +90,13 @@ class SqliteManager:
         
         conn.close()
         return returnmessage
-    
+    def openRacksChart(self):
+        conn = sqlite3.connect('main.sqlite')
+        c = conn.cursor()
+
+        returnObject = c.execute(f'SELECT * FROM racks WHERE id = {rackId};').fetchall()[0]
+        conn.close()
+        return returnObject
     # Active Stuff
     def createActiveRow(self, userID, rackID):
         conn = sqlite3.connect('main.sqlite')
@@ -102,6 +108,8 @@ class SqliteManager:
     def findActiveRow(self, userID):
         conn = sqlite3.connect('main.sqlite')
         c = conn.cursor()
+
+        print(f'SELECT * FROM active WHERE userID = {userID};')
 
         returnObject = c.execute(f'SELECT * FROM active WHERE userID = {userID};').fetchall()
         conn.commit()
