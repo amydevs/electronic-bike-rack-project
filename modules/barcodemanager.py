@@ -1,13 +1,10 @@
 from pyzbar import pyzbar
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
 
 # from skimage import io
 
 class BarcodeManager:
-    def __init__(initthing):
-        self.initthing=initthing
 
     def camera():
         cam = cv2.VideoCapture(0)
